@@ -1,2 +1,3 @@
 # SNHU CS-465 Project
-Module 1
+Module 2
+Page 81 - creating handlebar views
