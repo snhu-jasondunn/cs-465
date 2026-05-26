@@ -1,2 +1,2 @@
 # SNHU CS-465 Project
-Module 3
+Module 4 - NoSQL Databases, Models, and Schemas
