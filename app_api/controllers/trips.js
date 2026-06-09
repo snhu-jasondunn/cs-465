@@ -6,7 +6,7 @@ const Model = mongoose.model("trips");
 // regardless of outcome, response must include HTML status code and JSON message to the requesting client
 const tripsList = async (req, res) => {
   const q = await Model.find({}).exec(); // no filter, return all records
-  
+
   //console.log(q);
 
   if (!q) {
@@ -18,7 +18,7 @@ const tripsList = async (req, res) => {
 
 // POST: /trips - add a new Trip
 // regardless of outcome, response must include HTML status code and JSON message to the requesting client
-const tripsAddTrip = async(req, res) => {
+const tripsAddTrip = async (req, res) => {
   const newTrip = new Trip({
     code: req.body.code,
     name: req.body.name,
@@ -28,23 +28,23 @@ const tripsAddTrip = async(req, res) => {
     perPerson: req.body.perPerson,
     image: req.body.image,
     description: req.body.description,
-  })
+  });
   const q = await newTrip.save();
-  if(!q){
+  if (!q) {
     return res.status(400).json(err);
-  }else {
+  } else {
     return res.status(201).json(q);
   }
   console.log(q);
-}
+};
 
 // PUT: /trips/:tripCode Update a trip
-const tripsUpdateTrip = async(req, res) => {
+const tripsUpdateTrip = async (req, res) => {
   console.log(req.params);
   console.log(req.body);
 
   const q = await Model.findOneAndUpdate(
-    {'code': req.params.tripCode},
+    { code: req.params.tripCode },
     {
       code: req.body.code,
       name: req.body.name,
@@ -53,23 +53,22 @@ const tripsUpdateTrip = async(req, res) => {
       resort: req.body.resort,
       perPerson: req.body.perPerson,
       image: req.body.image,
-      description: req.body.description
-    }
+      description: req.body.description,
+    },
   ).exec();
 
-  if(!q){
+  if (!q) {
     return res.status(400).json(err);
   } else {
     return res.status(201).json(q);
   }
 
   console.log(q);
-}
-
+};
 
 const tripsFindByCode = async (req, res) => {
-  const q = await Model.find({'code': req.params.tripCode}).exec(); // no filter, return all records
-  
+  const q = await Model.find({ code: req.params.tripCode }).exec(); // no filter, return all records
+
   //console.log(q);
 
   if (!q) {
@@ -79,9 +78,31 @@ const tripsFindByCode = async (req, res) => {
   }
 };
 
+// DELETE: /trips/:tripCode Delete a trip
+const tripsDeleteTrip = async (req, res) => {
+  try {
+    const q = await Model.findOneAndDelete({
+      code: req.params.tripCode,
+    }).exec();
+
+    if (!q) {
+      return res.status(404).json({
+        message: "Trip not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Trip deleted successfully",
+    });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 module.exports = {
   tripsList,
   tripsFindByCode,
   tripsAddTrip,
-  tripsUpdateTrip
+  tripsUpdateTrip,
+  tripsDeleteTrip,
 };
